@@ -1,8 +1,18 @@
+# Dependencies
 node_modules/
-dist/
+
+# TypeScript build output
 *.tsbuildinfo
+dist/
+
+# Editor settings and local project notes
 .idea/
+.local/
+
+# macOS metadata
 .DS_Store
+
+# Environment files; keep the example available for Git
 .env
 .env.*
 !.env.example
