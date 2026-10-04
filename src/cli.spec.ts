@@ -2,13 +2,26 @@
 
 import assert from "node:assert/strict";
 import {spawnSync} from "node:child_process";
-import {mkdtempSync, readFileSync, writeFileSync} from "node:fs";
+import {mkdtempSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {describe, it} from "node:test";
+import {after, describe, it} from "node:test";
 import {fileURLToPath} from "node:url";
 
 const CLI = fileURLToPath(new URL("./cli.js", import.meta.url));
+
+/** Temp dirs the tests make; removed when the file's tests finish. */
+const tempDirs: string[] = [];
+
+function tempDir(prefix: string): string {
+    const dir = mkdtempSync(join(tmpdir(), prefix));
+    tempDirs.push(dir);
+    return dir;
+}
+
+after(() => {
+    for (const dir of tempDirs) rmSync(dir, {recursive: true, force: true});
+});
 
 function run(args: string[], configDir: string, input = ""): {stdout: string; status: number | null} {
     const result = spawnSync(process.execPath, [CLI, ...args], {
@@ -21,7 +34,7 @@ function run(args: string[], configDir: string, input = ""): {stdout: string; st
 
 describe("agent-kit CLI", () => {
     it("setup claude writes statusLine and keeps other settings", () => {
-        const dir = mkdtempSync(join(tmpdir(), "claude-config-"));
+        const dir = tempDir("claude-config-");
         writeFileSync(join(dir, "settings.json"), JSON.stringify({model: "opus"}));
         assert.equal(run(["setup", "claude"], dir).status, 0);
         assert.deepEqual(JSON.parse(readFileSync(join(dir, "settings.json"), "utf8")), {
@@ -31,7 +44,7 @@ describe("agent-kit CLI", () => {
     });
 
     it("uninstall claude removes only its own status line", () => {
-        const dir = mkdtempSync(join(tmpdir(), "claude-config-"));
+        const dir = tempDir("claude-config-");
         writeFileSync(join(dir, "settings.json"), JSON.stringify({model: "opus"}));
         run(["setup", "claude"], dir);
         assert.equal(run(["uninstall", "claude"], dir).status, 0);
@@ -44,17 +57,13 @@ describe("agent-kit CLI", () => {
     });
 
     it("statusline prints the line", () => {
-        const {stdout, status} = run(
-            ["statusline"],
-            mkdtempSync(join(tmpdir(), "claude-config-")),
-            JSON.stringify({workspace: {current_dir: "/tmp"}}),
-        );
+        const {stdout, status} = run(["statusline"], tempDir("claude-config-"), JSON.stringify({workspace: {current_dir: "/tmp"}}));
         assert.equal(status, 0);
         assert.match(stdout, /◆ .*tmp/);
     });
 
     it("prints usage and fails on an unknown command", () => {
-        const {stdout, status} = run(["nope"], mkdtempSync(join(tmpdir(), "claude-config-")));
+        const {stdout, status} = run(["nope"], tempDir("claude-config-"));
         assert.equal(status, 1);
         assert.match(stdout, /^Usage:/);
     });

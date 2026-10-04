@@ -2,28 +2,41 @@
 
 import assert from "node:assert/strict";
 import {spawnSync} from "node:child_process";
-import {mkdtempSync, writeFileSync} from "node:fs";
+import {mkdtempSync, rmSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {describe, it} from "node:test";
+import {after, describe, it} from "node:test";
 import {fileURLToPath} from "node:url";
 
 const MAIN = fileURLToPath(new URL("./main.js", import.meta.url));
 // biome-ignore lint/suspicious/noControlCharactersInRegex: matches the ANSI escape character on purpose.
 const ANSI = /\x1b\[[0-9;]*m/g;
 
+/** Temp dirs the tests make; removed when the file's tests finish. */
+const tempDirs: string[] = [];
+
+function tempDir(prefix: string): string {
+    const dir = mkdtempSync(join(tmpdir(), prefix));
+    tempDirs.push(dir);
+    return dir;
+}
+
+after(() => {
+    for (const dir of tempDirs) rmSync(dir, {recursive: true, force: true});
+});
+
 function run(stdin: string, env: Record<string, string> = {}): {stdout: string; status: number | null} {
     const result = spawnSync(process.execPath, [MAIN], {
         input: stdin,
         encoding: "utf8",
         // A clean environment: no label, no compaction overrides, an empty Claude config dir.
-        env: {PATH: process.env.PATH ?? "", CLAUDE_CONFIG_DIR: mkdtempSync(join(tmpdir(), "claude-config-")), ...env},
+        env: {PATH: process.env.PATH ?? "", CLAUDE_CONFIG_DIR: tempDir("claude-config-"), ...env},
     });
     return {stdout: result.stdout.replace(ANSI, ""), status: result.status};
 }
 
 function session(): {dir: string; transcript: string} {
-    const dir = mkdtempSync(join(tmpdir(), "agent-kit-"));
+    const dir = tempDir("agent-kit-");
     const transcript = join(dir, "session.jsonl");
     writeFileSync(
         transcript,
