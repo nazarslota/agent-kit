@@ -1,6 +1,6 @@
 {
   "name": "@nazarslota/agent-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Extensions and tools for coding agents (Pi, Claude Code, Codex)",
   "repository": {
     "type": "git",
@@ -39,6 +39,14 @@
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
     "@earendil-works/pi-tui": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    },
+    "@earendil-works/pi-tui": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
