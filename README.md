@@ -1,7 +1,41 @@
-# pi-extensions
+# agent-kit
+
+Extensions for coding agents: [Pi](https://github.com/earendil-works/pi), Claude Code and Codex.
+
+## Status line
+
+```
+◆ agent-kit  main │ Opus 5.5 thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k
+```
+
+Repo, branch, model, context use, session input (↑) and output (↓) tokens, and the tokens left before
+the agent compacts (⇥).
+
+**Pi**
+
+```sh
+pi install git:github.com/nazarslota/agent-kit
+```
+
+**Claude Code**
+
+```sh
+claude plugin marketplace add nazarslota/agent-kit
+claude plugin install statusline@agent-kit
+```
+
+**Codex** can't run a custom status line. Its built-in items come close, in `~/.codex/config.toml`:
+
+```toml
+[tui]
+status_line = ["project-name", "git-branch", "model-with-reasoning", "context-used", "context-window-size"]
+```
+
+## Development
 
 ```sh
 npm ci
-npm run typecheck
-npm run build
+npm run lint          # Biome: lint and format check (npm run format fixes)
+npm test              # unit tests
+npm run test:plugin   # Claude plugin tests
 ```

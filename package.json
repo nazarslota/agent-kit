@@ -1,16 +1,33 @@
 {
-  "name": "pi-extensions",
-  "version": "0.0.0",
+  "name": "agent-kit",
+  "version": "0.1.0",
   "private": true,
+  "description": "Extensions and tools for coding agents (Pi, Claude Code, Codex)",
   "type": "module",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "npm run build && node --test \"dist/**/*.spec.js\"",
+    "test:plugin": "claude plugin test ."
+  },
+  "pi": {
+    "extensions": [
+      "./src/statusline/pi/extension.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@earendil-works/pi-coding-agent": "1.0.2",
+    "@earendil-works/pi-tui": "1.0.2",
     "@types/node": "24.19.1",
     "typescript": "7.0.2"
   }
