@@ -20,8 +20,4 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
-      - name: Unit tests (Pi extension, Claude command, core)
-        run: npm test
-      - name: Claude Code plugin tests
-        # Pinned: the plugin hook API is new; bump this to test against a newer Claude Code.
-        run: npx -y @anthropic-ai/claude-code@2.1.289 plugin test .
+      - run: npm test

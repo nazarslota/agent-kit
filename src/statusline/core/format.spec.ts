@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {describe, it} from "node:test";
-import {compactState, filledSegments, formatTokens, levelFor, modelLabel, percentUsed, shortModelName, usageLabel} from "./format.js";
+import {compactState, filledSegments, formatTokens, levelFor, percentUsed, shortModelName, usageLabel} from "./format.js";
 
 describe("formatTokens", () => {
     it("formats each magnitude", () => {
@@ -60,20 +60,6 @@ describe("compactState", () => {
     it("is unknown without usage or threshold", () => {
         assert.deepEqual(compactState({used: undefined, window: 1_000, compactAt: 900}), {kind: "unknown"});
         assert.deepEqual(compactState({used: 10, window: 1_000, compactAt: undefined}), {kind: "unknown"});
-    });
-});
-
-describe("modelLabel", () => {
-    it("turns Claude ids into display names", () => {
-        assert.equal(modelLabel("claude-opus-5-5"), "Opus 5.5");
-        assert.equal(modelLabel("claude-haiku-4-5-20251001"), "Haiku 4.5");
-        assert.equal(modelLabel("claude-fable-5"), "Fable 5");
-        assert.equal(modelLabel("claude-sonnet-5-5[1m]"), "Sonnet 5.5");
-    });
-
-    it("leaves other ids alone", () => {
-        assert.equal(modelLabel("gpt-6.1-sol"), "gpt-6.1-sol");
-        assert.equal(modelLabel("claude"), "claude");
     });
 });
 

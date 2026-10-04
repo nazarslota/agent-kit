@@ -51,14 +51,3 @@ export function compactState(context: ContextUsage): CompactState {
 export function shortModelName(name: string): string {
     return name.replace(/\s*\([^)]*context\)$/i, "").trim();
 }
-
-/**
- * Turns a Claude model id into its display name: "claude-opus-5-5" → "Opus 5.5",
- * "claude-haiku-4-5-20251001" → "Haiku 4.5". Other ids are returned unchanged.
- */
-export function modelLabel(id: string): string {
-    const match = /^claude-([a-z]+)-(\d{1,2}(?:-\d{1,2})*)(?:-\d{8})?(?:\[[^\]]*])?$/.exec(id);
-    if (!match?.[1] || !match[2]) return id;
-    const family = match[1].charAt(0).toUpperCase() + match[1].slice(1);
-    return `${family} ${match[2].replaceAll("-", ".")}`;
-}

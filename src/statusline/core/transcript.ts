@@ -1,5 +1,4 @@
-// Sums session token totals from a Claude Code transcript (JSONL). Pure: callers read the file,
-// with Node in the status line command and with `$.fs` in the plugin.
+// Sums session token totals from a Claude Code transcript (JSONL). Pure: the caller reads the file.
 //
 // One API response can appear on several lines (one per content block), so lines are counted
 // once per message id.

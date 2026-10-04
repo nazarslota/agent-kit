@@ -20,8 +20,17 @@ pi install git:github.com/nazarslota/agent-kit
 **Claude Code**
 
 ```sh
-claude plugin marketplace add nazarslota/agent-kit
-claude plugin install statusline@agent-kit
+git clone https://github.com/nazarslota/agent-kit ~/agent-kit
+cd ~/agent-kit && npm ci && npm run build
+```
+
+Then point `statusLine` at it in `~/.claude/settings.json`:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "node ~/agent-kit/dist/statusline/claude/main.js"
+}
 ```
 
 **Codex** can't run a custom status line. Its built-in items come close, in `~/.codex/config.toml`:
@@ -35,7 +44,6 @@ status_line = ["project-name", "git-branch", "model-with-reasoning", "context-us
 
 ```sh
 npm ci
-npm run lint          # Biome: lint and format check (npm run format fixes)
-npm test              # unit tests
-npm run test:plugin   # Claude plugin tests
+npm run lint   # Biome: lint and format check (npm run format fixes)
+npm test       # unit tests
 ```

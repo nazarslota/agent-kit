@@ -1,9 +1,0 @@
-{
-  "name": "statusline",
-  "version": "0.1.0",
-  "description": "One-line status: repo, branch, model, context use and the exact room left before auto-compaction",
-  "author": {
-    "name": "Nazar Slota"
-  },
-  "repository": "https://github.com/nazarslota/agent-kit"
-}
