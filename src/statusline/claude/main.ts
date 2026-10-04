@@ -1,6 +1,6 @@
 // Claude Code status line command. Claude pipes the session as JSON on stdin and shows what
-// this prints. Configure it in settings.json:
-//   "statusLine": { "type": "command", "command": "node <repo>/dist/statusline/claude/main.js", "padding": 0 }
+// this prints. `agent-kit setup claude` configures it; by hand, in settings.json:
+//   "statusLine": { "type": "command", "command": "agent-kit statusline", "padding": 0 }
 //
 // It must always print a line and exit 0: any failure degrades to a shorter line.
 

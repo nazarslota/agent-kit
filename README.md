@@ -17,20 +17,20 @@ the agent compacts (⇥).
 pi install git:github.com/nazarslota/agent-kit
 ```
 
+To remove it: `pi remove git:github.com/nazarslota/agent-kit`.
+
 **Claude Code**
 
 ```sh
-git clone https://github.com/nazarslota/agent-kit ~/agent-kit
-cd ~/agent-kit && npm ci && npm run build
+npm i -g @nazarslota/agent-kit
+agent-kit setup claude
 ```
 
-Then point `statusLine` at it in `~/.claude/settings.json`:
+`setup` sets `statusLine` in `~/.claude/settings.json` to `agent-kit statusline`. To remove it:
 
-```json
-"statusLine": {
-  "type": "command",
-  "command": "node ~/agent-kit/dist/statusline/claude/main.js"
-}
+```sh
+agent-kit uninstall claude
+npm rm -g @nazarslota/agent-kit
 ```
 
 **Codex** can't run a custom status line. Its built-in items come close, in `~/.codex/config.toml`:

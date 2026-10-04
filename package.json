@@ -1,18 +1,35 @@
 {
-  "name": "agent-kit",
+  "name": "@nazarslota/agent-kit",
   "version": "0.1.0",
-  "private": true,
   "description": "Extensions and tools for coding agents (Pi, Claude Code, Codex)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nazarslota/agent-kit.git"
+  },
+  "homepage": "https://github.com/nazarslota/agent-kit#readme",
+  "bin": {
+    "agent-kit": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.spec.js",
+    "src",
+    "!src/**/*.spec.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "npm run build && node --test \"dist/**/*.spec.js\""
+    "test": "npm run build && node --test \"dist/**/*.spec.js\"",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm test"
   },
   "pi": {
     "extensions": [
