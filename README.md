@@ -47,3 +47,10 @@ npm ci
 npm run lint   # Biome: lint and format check (npm run format fixes)
 npm test       # unit tests
 ```
+
+To release, bump the version and push the tag; GitHub Actions publishes it to npm:
+
+```sh
+npm version patch
+git push --follow-tags
+```
