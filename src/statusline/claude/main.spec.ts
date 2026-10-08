@@ -68,9 +68,17 @@ describe("claude/main.js", () => {
         assert.equal(stdout, `◆ ${repo} │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k\n`);
     });
 
-    it("puts AGENT_KIT_LABEL in front", () => {
+    it("puts AGENT_KIT_LABEL at the end", () => {
         const {stdout} = run(JSON.stringify({workspace: {current_dir: "/tmp"}}), {AGENT_KIT_LABEL: "work"});
-        assert.ok(stdout.startsWith("work · ◆ tmp"), stdout);
+        assert.ok(stdout.startsWith("◆ tmp") && stdout.endsWith(" │ work\n"), stdout);
+    });
+
+    it("right-aligns the label to COLUMNS, leaving the last column free", () => {
+        const {stdout} = run(JSON.stringify({workspace: {current_dir: "/tmp"}}), {AGENT_KIT_LABEL: "work", COLUMNS: "100"});
+        // biome-ignore lint/suspicious/noControlCharactersInRegex: strips the ANSI colors
+        const line = stdout.replace(/\x1b\[[0-9;]*m/g, "").trimEnd();
+        assert.equal(line.length, 99);
+        assert.ok(line.endsWith("  work"), line);
     });
 
     it("prints a line and exits 0 on bad input", () => {

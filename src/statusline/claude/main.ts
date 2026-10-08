@@ -67,4 +67,8 @@ const environment: Environment = {
     readTranscript,
 };
 
-process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter)}\n`);
+// Claude passes the terminal width in COLUMNS; one column stays free so the line never wraps.
+const columns = Number.parseInt(process.env.COLUMNS ?? "", 10);
+const width = columns > 1 ? columns - 1 : undefined;
+
+process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter, width)}\n`);

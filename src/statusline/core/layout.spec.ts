@@ -18,9 +18,17 @@ describe("layout", () => {
         assert.equal(render(base, plain), "◆ agent-kit · ⎇ main │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k");
     });
 
-    it("prefixes a label and omits missing parts", () => {
+    it("ends with the label and omits missing parts", () => {
         const line = render({...base, label: "work", branch: undefined, reasoning: undefined, tokens: undefined}, plain);
-        assert.equal(line, "work · ◆ agent-kit │ Opus 5.5 │ ━━━━────── 421k/1M 42% ⇥546k");
+        assert.equal(line, "◆ agent-kit │ Opus 5.5 │ ━━━━────── 421k/1M 42% ⇥546k │ work");
+    });
+
+    it("pushes the label to the right edge when the width is known", () => {
+        const line = render({...base, label: "work", tokens: undefined}, plain, 80);
+        assert.equal(line.length, 80);
+        assert.match(line, /⇥546k {2,}work$/);
+        // Too narrow to pad: falls back to the separator.
+        assert.match(render({...base, label: "work"}, plain, 40), /⇥546k │ work$/);
     });
 
     it("warns when compaction is due and colors by level", () => {

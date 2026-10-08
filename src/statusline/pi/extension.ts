@@ -55,7 +55,7 @@ export default function statusline(pi: ExtensionAPI): void {
                         compaction: pi.getSettings().compaction,
                         tokens: sumUsage(assistantUsages(ctx.sessionManager.getEntries())),
                     });
-                    return [truncateToWidth(render(snapshot, paint), width, "…")];
+                    return [truncateToWidth(render(snapshot, paint, width), width, "…")];
                 },
             };
         });
