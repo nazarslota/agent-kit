@@ -73,11 +73,11 @@ describe("claude/main.js", () => {
         assert.ok(stdout.startsWith("◆ tmp") && stdout.endsWith(" │ work\n"), stdout);
     });
 
-    it("right-aligns the label to COLUMNS, leaving the last column free", () => {
+    it("right-aligns the label to the width Claude draws the line at", () => {
         const {stdout} = run(JSON.stringify({workspace: {current_dir: "/tmp"}}), {AGENT_KIT_LABEL: "work", COLUMNS: "100"});
         // biome-ignore lint/suspicious/noControlCharactersInRegex: strips the ANSI colors
         const line = stdout.replace(/\x1b\[[0-9;]*m/g, "").trimEnd();
-        assert.equal(line.length, 99);
+        assert.equal(line.length, 96);
         assert.ok(line.endsWith("  work"), line);
     });
 

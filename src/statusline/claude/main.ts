@@ -67,8 +67,19 @@ const environment: Environment = {
     readTranscript,
 };
 
-// Claude passes the terminal width in COLUMNS; one column stays free so the line never wraps.
-const columns = Number.parseInt(process.env.COLUMNS ?? "", 10);
-const width = columns > 1 ? columns - 1 : undefined;
+// Claude passes the terminal width in COLUMNS but draws the line 4 columns narrower, plus the
+// statusLine padding on each side; anything wider is cut with an ellipsis.
+const RESERVED_COLUMNS = 4;
 
-process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter, width)}\n`);
+function lineWidth(settings: Readonly<Record<string, unknown>>): number | undefined {
+    const columns = Number.parseInt(process.env.COLUMNS ?? "", 10);
+    const statusLine = settings.statusLine;
+    const padding =
+        typeof statusLine === "object" && statusLine !== null && "padding" in statusLine && typeof statusLine.padding === "number"
+            ? statusLine.padding
+            : 0;
+    const width = columns - RESERVED_COLUMNS - 2 * padding;
+    return width > 0 ? width : undefined;
+}
+
+process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter, lineWidth(readSettings()))}\n`);
