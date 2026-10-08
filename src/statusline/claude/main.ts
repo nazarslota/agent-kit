@@ -13,6 +13,7 @@ import {sumTranscript} from "../core/transcript.js";
 import {ansiPainter} from "./ansi.js";
 import {parseInput} from "./input.js";
 import {type Environment, toSnapshot} from "./snapshot.js";
+import {resolveTheme} from "./theme.js";
 
 const GIT_TIMEOUT_MS = 500;
 
@@ -31,6 +32,17 @@ function git(dir: string, ...args: string[]): string | undefined {
 
 const gitBranch = (dir: string) => git(dir, "branch", "--show-current");
 const gitRoot = (dir: string) => git(dir, "rev-parse", "--show-toplevel");
+
+/** macOS only: AppleInterfaceStyle is "Dark" in dark mode and missing in light mode. */
+function systemDark(): boolean | undefined {
+    if (process.platform !== "darwin") return undefined;
+    try {
+        execFileSync("defaults", ["read", "-g", "AppleInterfaceStyle"], {stdio: "ignore", timeout: GIT_TIMEOUT_MS});
+        return true;
+    } catch {
+        return false;
+    }
+}
 
 function readSettings(): Record<string, unknown> {
     try {
@@ -82,4 +94,12 @@ function lineWidth(settings: Readonly<Record<string, unknown>>): number | undefi
     return width > 0 ? width : undefined;
 }
 
-process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter, lineWidth(readSettings()))}\n`);
+const settings = readSettings();
+const theme = resolveTheme({
+    override: process.env.AGENT_KIT_THEME,
+    setting: settings.theme,
+    colorFgBg: process.env.COLORFGBG,
+    systemDark,
+});
+
+process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter(theme), lineWidth(settings))}\n`);

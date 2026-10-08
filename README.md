@@ -5,11 +5,15 @@ Extensions for coding agents: [Pi](https://github.com/earendil-works/pi), Claude
 ## Status line
 
 ```
-◆ agent-kit · ⎇ main │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k
+◆ agent-kit · ⎇ main │ Opus 5.5 · high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k
 ```
 
 Repo, branch, model, context use, session input (↑) and output (↓) tokens, and the tokens left before
 the agent compacts (⇥).
+
+`AGENT_KIT_LABEL` adds a label at the right edge, e.g. a profile name. In Claude Code the colors follow
+the `theme` setting; for `auto` they follow the terminal (`COLORFGBG`) or the macOS appearance, and
+`AGENT_KIT_THEME=light` or `dark` overrides that.
 
 **Pi**
 
