@@ -91,13 +91,13 @@ describe("Pi extension", () => {
         const {component} = await loadFooter();
         const lines = component?.render(200) ?? [];
         assert.equal(lines.length, 1);
-        assert.equal(strip(lines[0] ?? ""), "◆ agent-kit  main │ claude-opus-5-5 high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥563k");
+        assert.equal(strip(lines[0] ?? ""), "◆ agent-kit · ⎇ main │ claude-opus-5-5 · high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥563k");
     });
 
     it("colors through the Pi theme", async () => {
         const line = (await loadFooter()).component?.render(200)[0] ?? "";
         assert.ok(line.includes("\x1b[1m\x1b[36m◆ agent-kit"), JSON.stringify(line));
-        assert.ok(line.includes("\x1b[32m  main"), JSON.stringify(line));
+        assert.ok(line.includes("\x1b[32m⎇ main"), JSON.stringify(line));
         assert.ok(line.includes("\x1b[90m──────"), JSON.stringify(line));
     });
 

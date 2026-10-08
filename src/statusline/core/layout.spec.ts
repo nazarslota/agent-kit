@@ -15,12 +15,12 @@ const base: StatusSnapshot = {
 
 describe("layout", () => {
     it("renders the full line", () => {
-        assert.equal(render(base, plain), "◆ agent-kit  main │ Opus 5.5 thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k");
+        assert.equal(render(base, plain), "◆ agent-kit · ⎇ main │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k");
     });
 
     it("prefixes a label and omits missing parts", () => {
         const line = render({...base, label: "work", branch: undefined, reasoning: undefined, tokens: undefined}, plain);
-        assert.equal(line, "work · ◆ agent-kit │ Opus 5.5 │ ━━━━────── 421k/1M 42% · ⇥546k");
+        assert.equal(line, "work · ◆ agent-kit │ Opus 5.5 │ ━━━━────── 421k/1M 42% ⇥546k");
     });
 
     it("warns when compaction is due and colors by level", () => {
@@ -33,7 +33,7 @@ describe("layout", () => {
     it("drops the countdown when usage is unknown", () => {
         assert.equal(
             render({...base, tokens: undefined, context: {used: undefined, window: 200_000, compactAt: 193_400}}, plain),
-            "◆ agent-kit  main │ Opus 5.5 thinking │ ────────── 0% of 200k",
+            "◆ agent-kit · ⎇ main │ Opus 5.5 · thinking │ ────────── 0% of 200k",
         );
     });
 });

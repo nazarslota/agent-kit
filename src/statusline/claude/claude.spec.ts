@@ -7,16 +7,17 @@ import {type Environment, toSnapshot} from "./snapshot.js";
 
 // Shape captured from Claude Code 2.1.289.
 const sample = JSON.stringify({
-    cwd: "/work/agent-kit",
+    cwd: "/work/agent-kit/src",
     transcript_path: "/tmp/session.jsonl",
     model: {id: "claude-opus-5-5", display_name: "Opus 5.5 (1M context)"},
-    workspace: {current_dir: "/work/agent-kit"},
+    workspace: {current_dir: "/work/agent-kit/src", project_dir: "/work/agent-kit"},
     context_window: {
         context_window_size: 1_000_000,
         current_usage: {input_tokens: 1_000, cache_creation_input_tokens: 20_000, cache_read_input_tokens: 400_000},
         used_percentage: 42,
     },
     thinking: {enabled: true},
+    effort: {level: "high"},
 });
 
 function environment(overrides: Partial<Environment> = {}): Environment {
@@ -24,6 +25,7 @@ function environment(overrides: Partial<Environment> = {}): Environment {
         env: {},
         cwd: "/fallback",
         gitBranch: () => "main",
+        gitRoot: () => undefined,
         readSettings: () => ({}),
         readTranscript: () => ({input: 890_000, output: 8_400}),
         ...overrides,
@@ -33,10 +35,12 @@ function environment(overrides: Partial<Environment> = {}): Environment {
 describe("parseInput", () => {
     it("reads the fields the line needs", () => {
         assert.deepEqual(parseInput(sample), {
-            cwd: "/work/agent-kit",
+            cwd: "/work/agent-kit/src",
+            projectDir: "/work/agent-kit",
             transcriptPath: "/tmp/session.jsonl",
             modelName: "Opus 5.5 (1M context)",
             thinking: true,
+            effort: "high",
             contextWindow: 1_000_000,
             contextUsed: 421_000,
         });
@@ -79,8 +83,19 @@ describe("Claude status line", () => {
     it("renders the captured sample", () => {
         assert.equal(
             render(toSnapshot(parseInput(sample), environment()), plain),
-            "◆ agent-kit  main │ Opus 5.5 thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k",
+            "◆ agent-kit · ⎇ main │ Opus 5.5 · high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k",
         );
+    });
+
+    it("names the repo after the git root, not the current subdirectory", () => {
+        const snapshot = toSnapshot(parseInput(sample), environment({gitRoot: () => "/repos/agent-kit-main"}));
+        assert.equal(snapshot.repo, "agent-kit-main");
+    });
+
+    it("falls back to thinking without an effort level", () => {
+        const input = parseInput(JSON.stringify({thinking: {enabled: true}}));
+        assert.equal(toSnapshot(input, environment()).reasoning, "thinking");
+        assert.equal(toSnapshot(parseInput("{}"), environment()).reasoning, undefined);
     });
 
     it("shows AGENT_KIT_LABEL and falls back to the process cwd", () => {

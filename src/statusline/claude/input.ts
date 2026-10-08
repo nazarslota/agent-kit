@@ -3,9 +3,13 @@
 
 export interface ClaudeStatusInput {
     readonly cwd: string | undefined;
+    /** Directory Claude was started in; the repo name falls back to it outside git. */
+    readonly projectDir: string | undefined;
     readonly transcriptPath: string | undefined;
     readonly modelName: string | undefined;
     readonly thinking: boolean;
+    /** Effort level ("low" … "max"); undefined when the model has none. */
+    readonly effort: string | undefined;
     readonly contextWindow: number | undefined;
     /** Tokens in context (input + cache creation + cache read); undefined before the first response. */
     readonly contextUsed: number | undefined;
@@ -43,9 +47,11 @@ export function parseInput(raw: string): ClaudeStatusInput {
 
     return {
         cwd: string(workspace?.current_dir) ?? string(root.cwd),
+        projectDir: string(workspace?.project_dir),
         transcriptPath: string(root.transcript_path),
         modelName: string(model?.display_name) ?? string(model?.id),
         thinking: object(root.thinking)?.enabled === true,
+        effort: string(object(root.effort)?.level),
         contextWindow: count(context?.context_window_size),
         contextUsed,
     };

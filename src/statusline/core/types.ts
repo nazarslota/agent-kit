@@ -32,7 +32,7 @@ export interface StatusSnapshot {
 }
 
 /** Semantic style of a piece of text; each renderer maps roles to its own colors. */
-export type Role = "label" | "repo" | "branch" | "model" | "muted" | "track" | Level;
+export type Role = "label" | "repo" | "branch" | "model" | "reasoning" | "muted" | "track" | Level;
 
 export interface Segment {
     readonly text: string;

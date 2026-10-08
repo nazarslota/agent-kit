@@ -35,7 +35,7 @@ describe("Pi status line", () => {
     it("renders like the Claude line", () => {
         assert.equal(
             render(toSnapshot(state), plain),
-            "◆ agent-kit  main │ claude-opus-5-5 high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥563k",
+            "◆ agent-kit · ⎇ main │ claude-opus-5-5 · high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥563k",
         );
     });
 
@@ -44,7 +44,7 @@ describe("Pi status line", () => {
             toSnapshot({...state, thinkingLevel: "off", tokens: undefined, usage: {tokens: null, contextWindow: 1_000_000}}),
             plain,
         );
-        assert.equal(line, "◆ agent-kit  main │ claude-opus-5-5 │ ────────── 0% of 1M");
+        assert.equal(line, "◆ agent-kit · ⎇ main │ claude-opus-5-5 │ ────────── 0% of 1M");
     });
 });
 

@@ -7,13 +7,14 @@ import {render} from "../core/layout.js";
 import type {Painter, Role} from "../core/types.js";
 import {type PiUsage, sumUsage, toSnapshot} from "./snapshot.js";
 
-type ThemeColor = "accent" | "success" | "warning" | "error" | "dim" | "text" | "borderMuted";
+type ThemeColor = "accent" | "success" | "warning" | "error" | "dim" | "text" | "borderMuted" | "thinkingText";
 
 const colors: Record<Role, ThemeColor> = {
     label: "warning",
     repo: "accent",
     branch: "success",
     model: "text",
+    reasoning: "thinkingText",
     muted: "dim",
     track: "borderMuted",
     normal: "accent",

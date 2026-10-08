@@ -1,5 +1,5 @@
 // The one place that decides what the status line looks like:
-//   [label ·] ◆ repo  branch │ Model reasoning │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k
+//   [label ·] ◆ repo · ⎇ branch │ Model · reasoning │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k
 
 import {BAR_WIDTH, compactState, filledSegments, formatTokens, levelFor, percentUsed, usageLabel} from "./format.js";
 import type {Painter, Segment, StatusSnapshot} from "./types.js";
@@ -17,10 +17,10 @@ export function layout(snapshot: StatusSnapshot): Segment[] {
     if (snapshot.label) segments.push({text: snapshot.label, role: "label"}, DOT);
 
     segments.push({text: `◆ ${snapshot.repo}`, role: "repo"});
-    if (snapshot.branch) segments.push({text: `  ${snapshot.branch}`, role: "branch"});
+    if (snapshot.branch) segments.push(DOT, {text: `⎇ ${snapshot.branch}`, role: "branch"});
 
     segments.push(SEPARATOR, {text: snapshot.model, role: "model"});
-    if (snapshot.reasoning) segments.push({text: ` ${snapshot.reasoning}`, role: "muted"});
+    if (snapshot.reasoning) segments.push(DOT, {text: snapshot.reasoning, role: "reasoning"});
 
     segments.push(
         SEPARATOR,
@@ -32,7 +32,7 @@ export function layout(snapshot: StatusSnapshot): Segment[] {
     if (tokens) segments.push(DOT, {text: `↑${formatTokens(tokens.input)} ↓${formatTokens(tokens.output)}`, role: "muted"});
 
     const compact = compactState(context);
-    if (compact.kind === "left") segments.push(DOT, {text: `⇥${formatTokens(compact.tokens)}`, role: "muted"});
+    if (compact.kind === "left") segments.push({text: ` ⇥${formatTokens(compact.tokens)}`, role: "muted"});
     if (compact.kind === "soon") segments.push(DOT, {text: "compact soon", role: "error"});
 
     return segments.filter((segment) => segment.text.length > 0);

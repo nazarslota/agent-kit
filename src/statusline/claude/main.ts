@@ -16,18 +16,21 @@ import {type Environment, toSnapshot} from "./snapshot.js";
 
 const GIT_TIMEOUT_MS = 500;
 
-function gitBranch(dir: string): string | undefined {
+function git(dir: string, ...args: string[]): string | undefined {
     try {
-        const branch = execFileSync("git", ["-C", dir, "--no-optional-locks", "branch", "--show-current"], {
+        const output = execFileSync("git", ["-C", dir, "--no-optional-locks", ...args], {
             encoding: "utf8",
             stdio: ["ignore", "pipe", "ignore"],
             timeout: GIT_TIMEOUT_MS,
         }).trim();
-        return branch || undefined;
+        return output || undefined;
     } catch {
         return undefined;
     }
 }
+
+const gitBranch = (dir: string) => git(dir, "branch", "--show-current");
+const gitRoot = (dir: string) => git(dir, "rev-parse", "--show-toplevel");
 
 function readSettings(): Record<string, unknown> {
     try {
@@ -55,6 +58,13 @@ function readStdin(): string {
     }
 }
 
-const environment: Environment = {env: process.env, cwd: process.cwd(), gitBranch, readSettings, readTranscript};
+const environment: Environment = {
+    env: process.env,
+    cwd: process.cwd(),
+    gitBranch,
+    gitRoot,
+    readSettings,
+    readTranscript,
+};
 
 process.stdout.write(`${render(toSnapshot(parseInput(readStdin()), environment), ansiPainter)}\n`);

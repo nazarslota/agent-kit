@@ -5,7 +5,7 @@ Extensions for coding agents: [Pi](https://github.com/earendil-works/pi), Claude
 ## Status line
 
 ```
-◆ agent-kit  main │ Opus 5.5 thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k
+◆ agent-kit · ⎇ main │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k
 ```
 
 Repo, branch, model, context use, session input (↑) and output (↓) tokens, and the tokens left before

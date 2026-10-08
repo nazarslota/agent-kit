@@ -65,7 +65,7 @@ describe("claude/main.js", () => {
         assert.equal(status, 0);
         // The temp dir isn't a git repo, so no branch shows.
         const repo = dir.slice(dir.lastIndexOf("/") + 1);
-        assert.equal(stdout, `◆ ${repo} │ Opus 5.5 thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k · ⇥546k\n`);
+        assert.equal(stdout, `◆ ${repo} │ Opus 5.5 · thinking │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥546k\n`);
     });
 
     it("puts AGENT_KIT_LABEL in front", () => {

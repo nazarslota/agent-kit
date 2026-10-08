@@ -9,8 +9,14 @@ export interface Environment {
     readonly env: Readonly<Record<string, string | undefined>>;
     readonly cwd: string;
     readonly gitBranch: (dir: string) => string | undefined;
+    /** Top-level directory of the git repo containing dir. */
+    readonly gitRoot: (dir: string) => string | undefined;
     readonly readSettings: () => Readonly<Record<string, unknown>>;
     readonly readTranscript: (path: string) => TokenTotals | undefined;
+}
+
+function repoName(dir: string): string {
+    return basename(dir) || dir;
 }
 
 export function toSnapshot(input: ClaudeStatusInput, environment: Environment): StatusSnapshot {
@@ -19,10 +25,10 @@ export function toSnapshot(input: ClaudeStatusInput, environment: Environment): 
 
     return {
         label: environment.env.AGENT_KIT_LABEL || undefined,
-        repo: basename(dir) || dir,
+        repo: repoName(environment.gitRoot(dir) ?? input.projectDir ?? dir),
         branch: environment.gitBranch(dir),
         model: shortModelName(input.modelName ?? "no model"),
-        reasoning: input.thinking ? "thinking" : undefined,
+        reasoning: input.effort ?? (input.thinking ? "thinking" : undefined),
         context: {
             used: input.contextUsed,
             window,
