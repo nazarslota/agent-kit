@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import {describe, it} from "node:test";
-import type {ExtensionAPI, ExtensionContext, ReadonlyFooterDataProvider, Theme} from "@earendil-works/pi-coding-agent";
+import type {ExtensionAPI, ExtensionContext, ReadonlyFooterDataProvider} from "@earendil-works/pi-coding-agent";
 import statusline from "./extension.js";
 
 type Handler = (event: unknown, ctx: unknown) => Promise<void> | void;
@@ -57,11 +57,6 @@ async function loadFooter(options: Options = {}) {
     };
     await handlers.get("session_start")?.({}, ctx);
 
-    // Like a real Pi theme, color with zero-width ANSI codes, so width-based truncation sees real text.
-    const theme = {
-        fg: (color: string, text: string) => `\x1b[${CODES[color] ?? 39}m${text}\x1b[39m`,
-        bold: (text: string) => `\x1b[1m${text}\x1b[22m`,
-    } satisfies Pick<Theme, "fg" | "bold">;
     const footerData = {
         getGitBranch: () => "main",
         onBranchChange: (listener: () => void) => {
@@ -71,12 +66,9 @@ async function loadFooter(options: Options = {}) {
             };
         },
     } satisfies Pick<ReadonlyFooterDataProvider, "getGitBranch" | "onBranchChange">;
-    const component = factory?.({requestRender: () => renderRequests++}, theme, footerData);
+    const component = factory?.({requestRender: () => renderRequests++}, {}, footerData);
     return {component, handlers, fireBranchChange: () => branchListener?.(), renderRequests: () => renderRequests};
 }
-
-/** ANSI foreground codes for the theme colors the extension uses. */
-const CODES: Record<string, number> = {accent: 36, success: 32, warning: 33, error: 31, dim: 2, text: 37, borderMuted: 90};
 
 // biome-ignore lint/suspicious/noControlCharactersInRegex: matches the ANSI escape character on purpose.
 const strip = (text: string) => text.replace(/\x1b\[[0-9;]*m/g, "");
@@ -94,11 +86,11 @@ describe("Pi extension", () => {
         assert.equal(strip(lines[0] ?? ""), "◆ agent-kit · ⎇ main │ claude-opus-5-5 · high │ ━━━━────── 421k/1M 42% · ↑890k ↓8.4k ⇥563k");
     });
 
-    it("colors through the Pi theme", async () => {
+    it("colors with the terminal's palette", async () => {
         const line = (await loadFooter()).component?.render(200)[0] ?? "";
-        assert.ok(line.includes("\x1b[1m\x1b[36m◆ agent-kit"), JSON.stringify(line));
-        assert.ok(line.includes("\x1b[32m⎇ main"), JSON.stringify(line));
-        assert.ok(line.includes("\x1b[90m──────"), JSON.stringify(line));
+        assert.ok(line.includes("\x1b[1;34m◆ agent-kit"), JSON.stringify(line));
+        assert.ok(line.includes("\x1b[90m⎇ main"), JSON.stringify(line));
+        assert.ok(line.includes("\x1b[2;90m──────"), JSON.stringify(line));
     });
 
     it("uses the compaction reserve from settings", async () => {

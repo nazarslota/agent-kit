@@ -11,9 +11,8 @@ Extensions for coding agents: [Pi](https://github.com/earendil-works/pi), Claude
 Repo, branch, model, context use, session input (↑) and output (↓) tokens, and the tokens left before
 the agent compacts (⇥).
 
-`AGENT_KIT_LABEL` adds a label at the right edge, e.g. a profile name. In Claude Code the colors follow
-the `theme` setting; for `auto` they follow the terminal (`COLORFGBG`) or the macOS appearance, and
-`AGENT_KIT_THEME=light` or `dark` overrides that.
+`AGENT_KIT_LABEL` adds a label at the right edge, e.g. a profile name. In Claude Code and Pi the line
+uses the terminal's 16-color palette, so it follows the terminal theme, light or dark.
 
 **Pi**
 
