@@ -17,10 +17,11 @@ uses the terminal's 16-color palette, so it follows the terminal theme, light or
 **Pi**
 
 ```sh
-pi install git:github.com/nazarslota/agent-kit
+pi install npm:@nazarslota/agent-kit
 ```
 
-To remove it: `pi remove git:github.com/nazarslota/agent-kit`.
+To update it: `pi update --extension npm:@nazarslota/agent-kit`. To remove it:
+`pi remove npm:@nazarslota/agent-kit`.
 
 **Claude Code**
 
@@ -29,7 +30,8 @@ npm i -g @nazarslota/agent-kit
 agent-kit setup claude
 ```
 
-`setup` sets `statusLine` in `~/.claude/settings.json` to `agent-kit statusline`. To remove it:
+`setup` sets `statusLine` in `~/.claude/settings.json` to `agent-kit statusline`. To update, run
+`npm i -g @nazarslota/agent-kit` again. To remove it:
 
 ```sh
 agent-kit uninstall claude
@@ -47,13 +49,14 @@ status_line = ["project-name", "git-branch", "model-with-reasoning", "context-us
 
 ```sh
 npm ci
-npm run lint   # Biome: lint and format check (npm run format fixes)
-npm test       # unit tests
+npm run typecheck
+npm run lint        # Biome: lint and format check (npm run format fixes)
+npm test            # unit tests
 ```
 
 To release, bump the version and push the tag; GitHub Actions publishes it to npm:
 
 ```sh
-npm version patch
+npm version patch -m "chore: release %s"
 git push --follow-tags
 ```
