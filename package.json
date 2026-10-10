@@ -1,6 +1,6 @@
 {
   "name": "@nazarslota/agent-kit",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Extensions and tools for coding agents (Pi, Claude Code, Codex)",
   "repository": {
     "type": "git",
