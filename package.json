@@ -33,7 +33,8 @@
   },
   "pi": {
     "extensions": [
-      "./src/statusline/pi/extension.ts"
+      "./src/statusline/pi/extension.ts",
+      "./src/session-name/pi/extension.ts"
     ]
   },
   "peerDependencies": {
